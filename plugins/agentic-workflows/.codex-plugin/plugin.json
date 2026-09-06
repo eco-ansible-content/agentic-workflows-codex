@@ -1,0 +1,28 @@
+{
+  "name": "agentic-workflows",
+  "version": "1.0.0",
+  "description": "Autonomous, platform-agnostic workflows for building and maintaining Ansible collections.",
+  "author": {
+    "name": "Eco Ansible Content",
+    "email": "hyaish@redhat.com",
+    "url": "https://github.com/eco-ansible-content"
+  },
+  "homepage": "https://github.com/eco-ansible-content/agentic-workflows-codex",
+  "repository": "https://github.com/eco-ansible-content/agentic-workflows-codex",
+  "license": "MIT",
+  "keywords": ["ansible", "automation", "jira", "infrastructure", "workflow"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agentic Workflows",
+    "shortDescription": "Build and improve Ansible collections from Jira work.",
+    "longDescription": "A compact, phase-based Codex workflow for researching any automation platform, implementing Ansible collections, testing them, and delivering review-ready changes.",
+    "developerName": "Eco Ansible Content",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": [
+      "Build an Ansible collection from EPIC-123.",
+      "Enhance this collection from Jira task TASK-123.",
+      "Implement and test the next collection module."
+    ]
+  }
+}

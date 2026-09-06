@@ -1,0 +1,28 @@
+{
+  "name": "agentic-tools",
+  "version": "1.0.0",
+  "description": "Focused analysis, audit, and release workflows for Ansible collections.",
+  "author": {
+    "name": "Eco Ansible Content",
+    "email": "hyaish@redhat.com",
+    "url": "https://github.com/eco-ansible-content"
+  },
+  "homepage": "https://github.com/eco-ansible-content/agentic-workflows-codex",
+  "repository": "https://github.com/eco-ansible-content/agentic-workflows-codex",
+  "license": "MIT",
+  "keywords": ["ansible", "audit", "jira", "quality", "release"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Agentic Tools",
+    "shortDescription": "Analyze Epics, audit modules, and release plugins.",
+    "longDescription": "Lean, evidence-based skills for assessing Ansible delivery work before it reaches review or release.",
+    "developerName": "Eco Ansible Content",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": [
+      "Analyze Jira Epic EPIC-123 for Ansible work.",
+      "Audit the scvmm_cloud Ansible module.",
+      "Prepare the next agentic-workflows release."
+    ]
+  }
+}
