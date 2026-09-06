@@ -11,17 +11,27 @@ Native Codex plugins for building, enhancing, auditing, and releasing Ansible co
 
 The workflow is platform-agnostic. It selects an API, SDK, CLI, or configuration-file pattern from evidence rather than relying on a fixed platform template.
 
-## Install for a team
+## Install from Codex CLI
 
-In a ChatGPT/Codex workspace, an administrator imports this GitHub repository as a marketplace under **Admin → Plugins → Add → Import marketplace**. The marketplace manifest is at `.agents/plugins/marketplace.json`; after import, choose the installation policy for each plugin.
-
-For local Codex CLI development, add this repository as a marketplace, install one or both plugins, then start a new conversation:
+Add this marketplace directly from GitHub—no clone is required:
 
 ```bash
-codex plugin marketplace add /path/to/agentic-workflows-codex
+codex plugin marketplace add eco-ansible-content/agentic-workflows-codex --ref main
 codex plugin add agentic-workflows@agentic-workflows-codex
 codex plugin add agentic-tools@agentic-workflows-codex
 ```
+
+Start a new Codex session after installation. To refresh the marketplace after a release, then reinstall the plugin(s) you use:
+
+```bash
+codex plugin marketplace upgrade agentic-workflows-codex
+codex plugin add agentic-workflows@agentic-workflows-codex
+codex plugin add agentic-tools@agentic-workflows-codex
+```
+
+## Install for a team
+
+In a ChatGPT/Codex workspace, an administrator imports this GitHub repository as a marketplace under **Admin → Plugins → Add → Import marketplace**. The marketplace manifest is at `.agents/plugins/marketplace.json`; after import, choose the installation policy for each plugin.
 
 ## Requirements
 

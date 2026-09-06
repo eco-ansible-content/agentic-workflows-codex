@@ -8,17 +8,25 @@ An administrator imports `https://github.com/eco-ansible-content/agentic-workflo
 
 The workspace syncs the GitHub source automatically; use **Sync now** after merging an urgent release. Administrators must review changes before merge because a synced marketplace can introduce newly listed plugins.
 
-## Local development
+## Direct Codex CLI installation
 
-Register the checkout as a local marketplace, install a plugin, then test in a new Codex conversation:
+Register this GitHub repository as a remote marketplace; a local checkout is not required:
 
 ```bash
-codex plugin marketplace add /absolute/path/to/agentic-workflows-codex
+codex plugin marketplace add eco-ansible-content/agentic-workflows-codex --ref main
 codex plugin add agentic-workflows@agentic-workflows-codex
 codex plugin add agentic-tools@agentic-workflows-codex
 ```
 
-For an iteration after installation, update only the changed plugin's version/cachebuster, reinstall it, and use a new conversation. Do not edit the installed copy.
+Start a new Codex conversation after installation. To retrieve a newly pushed release, refresh the Git marketplace, reinstall the plugin(s), and start another new conversation:
+
+```bash
+codex plugin marketplace upgrade agentic-workflows-codex
+codex plugin add agentic-workflows@agentic-workflows-codex
+codex plugin add agentic-tools@agentic-workflows-codex
+```
+
+For contributor testing from an unpushed working tree, a local marketplace path is still appropriate; it is not the normal user installation route.
 
 ## Release checklist
 
