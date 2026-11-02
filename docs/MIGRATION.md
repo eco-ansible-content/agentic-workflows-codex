@@ -23,3 +23,9 @@ This repository preserves the outcomes of the original `agentic-workflows` marke
 - Jira remains connector-agnostic: use an approved Jira connector/MCP server when available; a local Jira CLI is an alternate integration, not a bundled credential mechanism.
 
 This avoids claiming parity through a text-for-text port: the functional stages and quality gates are retained, while the prompt footprint and host-specific coupling are reduced.
+
+## Proxmox upgrade scope
+
+The [Proxmox readiness plan](plans/2026-11-02-proxmox-agent-and-tool-readiness.md) upgrades these existing Codex-ready roles in place. The swarm retains orchestration and prerequisite responsibilities; worker, QA, and delivery retain their specialist roles and now explicitly load shared contract and conditional Proxmox references. Direct invocation performs the same discovery. No original Claude agent tree or cache path is needed.
+
+The Codex tools retain connector/MCP/CLI access and conversation-only analysis. They trace inherited behavior and actual test fixtures; an audit score no longer implies verified readiness. [Validation notes](PROXMOX-VALIDATION.md) record local and read-only behavioral checks separately from the pending live pilot. Implementation is scoped to this Codex repository.

@@ -5,64 +5,34 @@ description: Use when the user asks to build, scaffold, or enhance an Ansible co
 
 # Ansible Collection Swarm
 
-Deliver a complete Ansible collection or a review-ready enhancement. Work autonomously after the minimum context is gathered, but do not claim access, test results, or delivery that was not verified.
+Deliver a complete collection or a review-ready enhancement using the target repository's architecture and workflow. Keep implementation, executed validation, and delivery states separate.
 
-## Operating contract
+## Establish context
 
-First establish only what is essential:
+Reuse supplied requirements and context; ask only for missing information that affects scope, delivery, credentials, or the test environment. Use a configured Jira connector/MCP server or `jira`/`jira-rh` CLI; when unavailable, analyze supplied requirements and identify missing evidence. Task scope stays within that task; an Epic includes its children; an ANSTRAT includes its referenced Epics. Related work does not silently expand the assignment.
 
-1. Work item or complete requirements; retrieve it from Jira when access exists.
-2. Target collection location and whether this is a new build or an enhancement.
-3. Delivery target: local changes, branch/PR, or a repository URL.
-4. Test environment, or explicit code-only validation.
+Read [repository contract](../../references/collection-contract.md) before planning. For `ansible.proxmox`, also read [Proxmox framework](../../references/proxmox-collection.md). Discover the actual collection, source revision, framework, dependencies, supported service/versions, tests, and CI. Verify prerequisite code exists on the selected base; if a prerequisite is unmerged, establish its revision and delivery dependency before dependent work. Preserve user changes and choose the working branch before editing.
 
-Use supplied analysis as authority. Persist material requirements in `docs/plans/PROJECT_BRIEF.md` in the target collection: goals, module backlog, constraints, prerequisites, quality rules, and definition of done. Do not ask further permission for normal in-scope work. Escalate only for missing credentials, external destructive operations, a contradictory requirement, or a decision that changes scope.
+Record material requirements and non-secret contract facts in the target collection's `docs/plans/PROJECT_BRIEF.md`: scope/backlog, implementation role per module, dependencies, base/head revisions, required hooks, test targets/commands, validation policy, and definition of done. Reference existing secret stores or environment variables; keep credentials out of planning artifacts.
 
-## Lifecycle
+## Execute by phase
 
-### 1. Ingest and plan
+Load the matching sibling instructions from this plugin when entering each phase; names alone are not a substitute for reading them:
 
-Read the work item and existing repository. Classify scope: Task = one module, Epic = related backlog, ANSTRAT = multiple Epics. Resolve dependencies and acceptance criteria. Prefer an existing collection if `galaxy.yml` is found; otherwise create a new collection in the agreed location.
+| Phase | Instructions | Handoff |
+| --- | --- | --- |
+| Implementation | [worker](../ansible-collection-worker/SKILL.md) | Collection root/revision, one module's role and acceptance criteria, framework hooks, dependency ownership, test targets |
+| Verification | [QA](../ansible-collection-qa/SKILL.md) | Changed paths, affected consumers, commands/results, environment and unresolved gaps |
+| Delivery and CI | [delivery](../ansible-collection-delivery/SKILL.md) | Requested delivery target, selected base, validation policy, evidence SHA, remaining checks |
 
-Classify the platform by characteristics, not its brand name:
+1. **Foundation/enhancement:** use `galaxy.yml` and repository evidence. Enhance existing code without replacing its license, metadata, CI, or test layout. Scaffold a new collection only when required, using the chosen project's conventions.
+2. **Prerequisites:** separate controller/EE libraries from managed-platform installation. Verify configured API/transport access and required test resources; connectivity alone does not prove operation privileges. Make up to three focused recovery attempts for actionable setup failures. Do not infer authorization to reconfigure a hypervisor, increase privileges, or clean unrelated resources.
+3. **Build:** order work by shared utilities, fixtures, and module dependencies. Implement one module or cohesive action/info pair per work item. Assign an owner for shared files before parallel work; use sequential work when the host or authorization does not support delegation.
+4. **Verify/refactor:** require unit coverage for affected Python behavior, or record a blocking validation gap. Run QA after each module/batch. Review duplication around ten modules or when it materially harms consistency; reuse or narrowly extend existing utilities and regression-test affected consumers.
+5. **Deliver/learn:** follow the delivery skill within the user's requested target. Capture sanitized, evidence-backed lessons with applicability and revision in the existing learning location; agent-definition maintenance is separate from the active build.
 
-| Evidence | Primary pattern |
-| --- | --- |
-| HTTP endpoints, JSON, OAuth | REST API |
-| Python client/library | SDK |
-| PowerShell cmdlets | Windows/PowerShell |
-| Device commands or network connection | CLI/network |
-| Desired file state | Configuration file |
-| SQL queries/connection | Database |
+## Progress and completion
 
-Research authoritative vendor documentation for unfamiliar APIs, SDK calls, permissions, and lifecycle semantics. Record the specific operation backing every module; never fabricate an endpoint or cmdlet.
+Track each work item as planned, implemented, locally validated, integration pending, approval required, blocked, failed, or fully validated, with evidence and next action. Invalidate validation affected by subsequent edits. An explicitly selected code-only run may complete its requested scope while live validation remains unverified; label that limitation.
 
-### 2. Foundation or enhancement
-
-For new collections, create standard Ansible collection structure: `galaxy.yml`, `README.md`, `plugins/modules`, `plugins/module_utils`, `tests/integration/targets`, docs, changelog fragments, CI configuration compatible with the target project, and an inventory template. Do not overwrite an existing structure unnecessarily.
-
-For enhancements, inventory modules, utilities, tests, CI rules, branch conventions, and changelog policy before editing. Preserve established patterns unless the brief requires a deliberate migration.
-
-### 3. Prerequisites
-
-Check required CLIs, Python/PowerShell dependencies, credentials, and test connectivity before a batch. Make up to three focused recovery attempts for a setup failure, logging commands, errors, and the next action. If the environment remains unavailable, continue safe code-only work, mark integration validation blocked, and leave exact reproduction steps.
-
-### 4. Implement in small batches
-
-Prioritize independent modules. For each module invoke the `ansible-collection-worker` workflow principles: complete argument validation, read-before-write state comparison, idempotency, check mode, structured error handling, sensitive-data protection, documentation, unit coverage where practical, and integration tests. Reuse `module_utils`; extract a utility after repeated logic appears in three places.
-
-Maintain a status table in the project brief: planned, implemented, tested, blocked, and reason. Do not implement placeholders merely to count a module as complete.
-
-### 5. Verify and refactor
-
-Use `ansible-collection-qa` principles after each module or batch. Run the narrowest relevant checks first, then collection lint/unit/integration checks available in the repository. Refactor after roughly ten modules or when duplication materially harms consistency. Regression-test affected modules.
-
-### 6. Deliver and learn
-
-Use `ansible-collection-delivery` principles. Create focused commits and changelog fragments; create a PR only if the target and authentication are available. Monitor CI when requested, diagnose from logs, and apply focused fixes. Do not force-push a protected or user-owned branch.
-
-Capture reusable, evidence-backed lessons in `insights/` or the project’s existing learning location. Lessons describe trigger, diagnosis, proven remedy, and applicability; do not record secrets or unverified speculation.
-
-## Completion report
-
-Return: scope handled; modules and tests completed; blocked work with cause and recovery command; changed paths; validation commands/results; delivery location or PR; and learning captured. Clearly distinguish code-only validation from successful integration testing.
+Return scope handled, changed paths, module/test outcomes, exact executed commands and revision, blocked work and recovery steps, and delivery location/PR if created. Required integration or CI still pending prevents an unqualified readiness claim. Never fabricate test results or imply the brief authorizes additional external actions.

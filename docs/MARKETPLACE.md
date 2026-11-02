@@ -32,8 +32,12 @@ For contributor testing from an unpushed working tree, a local marketplace path 
 
 1. Test each changed skill with a representative fresh Codex conversation.
 2. Bump the affected `plugins/<name>/.codex-plugin/plugin.json` SemVer version.
-3. Run the plugin validator for each changed plugin.
+3. Run `node scripts/validate-plugins.mjs` and `node --test tests/validate-plugins.test.mjs` from the repository root. These check repository packaging and reference portability; also use an available skill frontmatter validator and record behavioral smoke-test evidence.
 4. Verify the marketplace entry still names the same plugin and points to `./plugins/<name>`.
 5. Commit, tag if appropriate, push, and ask the workspace administrator to sync.
 
 The marketplace separates release versions by plugin. A change to `agentic-tools` does not require a version bump to `agentic-workflows`.
+
+## 1.1.0 minor release
+
+The Proxmox enhancements set both plugin manifests to `1.1.0`, upgrading the published `1.0.0` versions. The marketplace follows `main`; the release becomes discoverable after the source update and marketplace refresh. Installation and fresh-session smoke tests remain separate steps. See the [validation record](PROXMOX-VALIDATION.md) for checks actually completed and the remaining live pilot. Keep version fields in each `.codex-plugin/plugin.json`; the marketplace catalog has no duplicated version fields.

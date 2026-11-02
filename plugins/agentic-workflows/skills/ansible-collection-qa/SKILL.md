@@ -5,23 +5,28 @@ description: Use when testing, reviewing, or diagnosing quality gaps in an Ansib
 
 # Ansible Collection QA
 
-Validate behavior, not just syntax. Read the module, utility code, test target, project brief, and CI configuration before choosing checks.
+Validate behavior and executed evidence. Read [repository contract](../../references/collection-contract.md), the project brief, changed implementation, relevant base classes/helpers, tests, and CI even when invoked directly. For `ansible.proxmox`, read [Proxmox framework](../../references/proxmox-collection.md).
 
-## Four-stage action-module verification
+## Select applicable scenarios
 
-1. Check mode predicts create/update/delete without changing the target.
-2. First `present` run changes the target and asserts useful returned values.
-3. The same `present` run is idempotent.
-4. `absent` removes the target and a repeated `absent` run is idempotent.
+| Module role | Verification |
+| --- | --- |
+| Resource lifecycle | Applicable create/update/delete, repeat/no-op, check-mode predictions with no mutation, actual-state and value assertions, documented defaults/reset/immutable behavior |
+| Imperative action | Documented operation and completion, applicable already-satisfied behavior, safe check-mode prediction, failure handling; no invented CRUD states |
+| Information | Supported list/filter/no-result paths, documented output values and errors, `changed=False` including check mode |
+| Standalone read/connection information | Documented read/access result and no mutation; no invented filters, paired mutation module, or resource cleanup |
 
-Verify actual remote state with an info/read operation after mutations. For info modules test unfiltered list, targeted lookup, no-result handling, and values—not only variable existence.
+Trace inherited and delegated operations; direct endpoint names need not appear in a subclass. API use does not exempt check mode. Compare behavior to documented scope and acceptance criteria rather than demanding every platform operation.
 
-## Quality gates
+## Quality and execution gates
 
-- Validate docs, argument spec, return schema, and examples against implementation.
-- Detect duplicated utility logic, unsafe secret handling, missing check mode, and errors that conceal the platform response.
-- Confirm tests isolate names/resources and clean dependencies in `always` blocks.
-- Run the repository’s narrow checks first, then unit, integration, sanity, lint, and CI-equivalent commands where available.
-- Treat unavailable infrastructure as blocked validation, never a pass.
+- Check argument specs, shared fragments, examples, returns, action-group registration, dependency metadata, sensitive-data handling, and actionable error paths.
+- Require unit tests for affected Python logic and regressions for affected shared-helper consumers. Trace imports, subclasses and delegated hooks to select consumers; explain uncertain mappings and choose sufficient coverage rather than assuming only the edited module is affected. Do not mark missing coverage as passing because live infrastructure is unavailable.
+- Follow test includes/imports, fixture role dependencies, defaults, variables, and effective `module_defaults`. Accept paired action/info targets and justified supporting-resource setup; preserve isolation through resource ownership.
+- Check cleanup of primary and supporting resources in `always`, continued attempts after errors, and removal verification. `ignore_errors` or `failed_when: false` can permit continuation but do not establish successful cleanup; expose leftover resources.
+- Use repository commands and the required collection layout with supported Python/Core versions. Start with relevant narrow checks and include affected regressions. Inspect selected integration targets: an empty selection is a gap when known affected tests were expected.
+- For an available confirmed test environment, verify actual state with an info/read operation after mutations and check-mode operations. Compare concrete values, not just existence of result variables.
 
-Report a compact matrix: module, checks run, outcome, evidence, failure cause, owner/next action. When fixing a failure, add a regression test before declaring it resolved.
+Record commands, selected targets, outcome, source/worktree revision, and gaps. The brief's integration policy is `local`, `protected_ci`, or explicit `code_only` (see the repository contract); never silently switch after a failure. In protected-CI mode local checks can precede an authorized draft PR while integration remains pending. Approval waits, infrastructure failures, and unavailable environments remain distinct from pass.
+
+Return a compact matrix: item, applicable check, inspected versus executed evidence, outcome, cause, and next action. Add a focused regression when fixing a demonstrated defect. Fully validated requires all applicable required checks for the current changes; high coverage, green units, or a structurally valid target alone is insufficient.

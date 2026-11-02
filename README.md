@@ -48,13 +48,23 @@ The original Claude agent swarm has been expressed as compact, progressive-discl
 
 ## Development
 
-Validate both plugins before release:
+The workflow skills discover the target repository's framework, dependencies, tests, and delivery policy before implementation. They load supporting guidance only when it applies. Standalone tools work independently and distinguish an audit score from verified readiness.
+
+For `ansible.proxmox`, the packaged reference covers shared class hooks, HTTPS/proxmoxer authentication, UPID tasks, power policies, paired test targets, shared fixtures, and protected GitHub integration. The [implementation plan](docs/plans/2026-11-02-proxmox-agent-and-tool-readiness.md) records scope and remaining work; [validation notes](docs/PROXMOX-VALIDATION.md) distinguish local checks and read-only evaluations from the live pilot, which remains pending.
+
+Run repository packaging checks and validator tests with Node.js 20 or later (contributor tooling only):
 
 ```bash
-python3 /Users/hyaish/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/agentic-workflows
-python3 /Users/hyaish/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/agentic-tools
+node scripts/validate-plugins.mjs
+node --test tests/validate-plugins.test.mjs
 ```
 
-Increment the affected plugin's SemVer version and update the marketplace release notes when behavior changes. Test each skill in a fresh Codex conversation after installation.
+The repository validator checks manifests, skill identity, and packaged reference reachability/portability; it does not execute skills or certify their behavior. It can also check a relocated plugin independently with `node scripts/validate-plugins.mjs --plugin /path/to/plugin`. Use the installed skill frontmatter validator when available. Test changed skills in fresh Codex conversations after installation and record unavailable checks explicitly.
+
+Increment only affected plugin versions and update release notes when behavior changes. Do not edit installed caches to test source changes.
+
+## 1.1.0 — 2026-11-02
+
+Both plugins use `1.1.0`: repository-contract discovery, Proxmox framework guidance, role-specific QA, protected-CI/current-revision evidence, and inheritance-aware analysis/audits. Epic analysis includes the official PVE QEMU API documentation. Audit readiness is separate from normalized quality scoring. Refresh the configured marketplace to discover the minor upgrade, then upgrade the installed plugins. Live Proxmox validation remains pending.
 
 See [Marketplace Operations](docs/MARKETPLACE.md) for team distribution and upgrades, and [Migration Map](docs/MIGRATION.md) for the Claude-to-Codex capability mapping.
